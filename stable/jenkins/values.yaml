@@ -275,8 +275,8 @@ Master:
 
 Agent:
   Enabled: true
-  Image: jenkins/jnlp-slave
-  ImageTag: 3.27-1
+  Image: ninech/jnlp-slave-with-docker
+  ImageTag: latest
   CustomJenkinsLabels: []
 # ImagePullSecret: jenkins
   Component: "jenkins-slave"
