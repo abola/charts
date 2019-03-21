@@ -76,8 +76,10 @@ spec:
         - name: "copy-default-config"
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
-          command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
+          command: [ "sh", "/var/jenkins_config/apply_config.sh && apt-get update && apt-get install wget && wget --output-document=docker.tar.gz https://download.docker.com/linux/static/stable/x86_64/docker-18.06.3-ce.tgz && tar zxvf docker.tar.gz && cp docker/* /usr/local/bin && rm -rf docker/ docker.tar.gz "]
           env:
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375     
           {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
@@ -145,6 +147,8 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
+            - name: DOCKER_HOST
+              value: tcp://localhost:2375          
             - name: JAVA_OPTS
               value: {{ default "" .Values.Master.JavaOpts | quote }}
             - name: JENKINS_OPTS
@@ -263,7 +267,17 @@ spec:
             - name: sc-config-volume
               mountPath: {{ .Values.Master.Sidecars.configAutoReload.folder | default "/var/jenkins_home/casc_configs" | quote }}
             {{- end }}
-
+        - name: docker
+          image: docker:dind
+          resources:
+            requests:
+              cpu: 20m
+              memory: 512Mi
+          securityContext:
+            privileged: true
+          volumeMounts:
+          - name: docker-sock
+            mountPath: /var/lib/docker
 {{- if and (.Values.Master.JCasC.enabled) (.Values.Master.Sidecars.configAutoReload.enabled) }}
         - name: {{ template "jenkins.name" . }}-sc-config
           image: "{{ .Values.Master.Sidecars.configAutoReload.image }}"
