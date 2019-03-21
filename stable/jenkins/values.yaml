@@ -310,7 +310,7 @@ Agent:
   # jenkins-agent: v1
 
   # Executed command when side container gets started
-  Command: ["/bin/sh", "-c", "apt-get update && apt-get install wget && wget --output-document=docker.tar.gz https://download.docker.com/linux/static/stable/x86_64/docker-18.06.3-ce.tgz && tar zxvf docker.tar.gz && cp docker/* /usr/local/bin && rm -rf docker/ docker.tar.gz"]
+  Command:
   Args:
   # Side container name
   SideContainerName: jnlp
