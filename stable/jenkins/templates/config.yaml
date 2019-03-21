@@ -66,6 +66,10 @@ data:
 {{- end }}{{- end }}
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
 {{- end }}
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.EmptyDirVolume>
+                  <mountPath>/var/lib/docker</mountPath>
+                  <memory>false</memory>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.EmptyDirVolume>
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -101,7 +105,34 @@ data:
                       <value>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
 {{- end }}
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                    <org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
+                      <key>DOCKER_HOST</key>
+                      <value>tcp://localhost:2375</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.model.KeyValueEnvVar>
                   </envVars>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>docker</name>
+                  <image>docker:dind</image>
+                  <privileged>true</privileged>
+                  <alwaysPullImage>true</alwaysPullImage>
+                  <command></command>
+                  <args></args>
+                  <ttyEnabled>false</ttyEnabled>
+                  <resourceRequestCpu></resourceRequestCpu>
+                  <resourceRequestMemory></resourceRequestMemory>
+                  <resourceLimitCpu></resourceLimitCpu>
+                  <resourceLimitMemory></resourceLimitMemory>
+                  <envVars/>
+                  <ports/>
+                  <livenessProbe>
+                    <execArgs></execArgs>
+                    <timeoutSeconds>0</timeoutSeconds>
+                    <initialDelaySeconds>0</initialDelaySeconds>
+                    <failureThreshold>0</failureThreshold>
+                    <periodSeconds>0</periodSeconds>
+                    <successThreshold>0</successThreshold>
+                  </livenessProbe>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars>
