@@ -144,6 +144,7 @@ Master:
     - workflow-aggregator:2.6
     - credentials-binding:1.17
     - git:3.9.1
+    - kubernetes-cli:1.6.0
 
   # Enable to always override the installed plugins with the values of 'Master.InstallPlugins' on upgrade or redeployment.
   # OverwritePlugins: true
