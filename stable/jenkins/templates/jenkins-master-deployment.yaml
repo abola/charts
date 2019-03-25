@@ -151,6 +151,10 @@ spec:
               value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             - name: JENKINS_SLAVE_AGENT_PORT
               value: "{{ .Values.Master.SlaveListenerPort }}"
+            {{- if .Values.Master.K8sAdminCredential }}
+            - name: K8S_ADMIN_CREDENTIAL
+              value: {{- .Values.Master.K8sAdminCredential }}
+            {{- end }}
             {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
